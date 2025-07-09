@@ -1,5 +1,6 @@
 import unittest
 from functions.get_files_info import get_files_info
+from functions.get_file_content import get_file_content
 
 
 class TestGetFileInfo(unittest.TestCase):
@@ -12,7 +13,8 @@ class TestGetFileInfo(unittest.TestCase):
         testcase = """Result for current directory:
  - main.py: file_size=565 bytes, is_dir=False
  - pkg: file_size=63 bytes, is_dir=True
- - tests.py: file_size=1331 bytes, is_dir=False"""
+ - tests.py: file_size=1331 bytes, is_dir=False
+ - lorem.txt: file_size=20068 bytes, is_dir=False"""
         self.assertEqual(output, testcase)
 
     def test_calculator_with_pkg(self):
@@ -41,6 +43,28 @@ class TestGetFileInfo(unittest.TestCase):
     Error: Cannot list "../" as it is outside the permitted working directory"""
         self.assertEqual(output1, testcase1)
         self.assertEqual(output2, testcase2)
+
+
+# For now, we just print output
+class TestGetFileContent(unittest.TestCase):
+    def setUp(self):
+        self.get_file_content = get_file_content
+
+    def test_lorem_ipsum_text_in_calculator_dir(self):
+        output = self.get_file_content("calculator", "lorem.txt")
+        print(output)
+
+    def test_main_dot_py_in_calculator_dir(self):
+        output = self.get_file_content("calculator", "main.py")
+        print(output)
+
+    def test_calculator_module_path(self):
+        output = self.get_file_content("calculator", "pkg/calculator.py")
+        print(output)
+
+    def test_outside_working_dir(self):
+        output = self.get_file_content("calculator", "/bin/cat")
+        print(output)
 
 
 if __name__ == "__main__":
