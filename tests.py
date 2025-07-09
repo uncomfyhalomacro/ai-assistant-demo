@@ -1,6 +1,7 @@
 import unittest
 from functions.get_files_info import get_files_info
 
+
 class TestGetFileInfo(unittest.TestCase):
     def setUp(self):
         self.get_files_info = get_files_info
@@ -17,7 +18,7 @@ class TestGetFileInfo(unittest.TestCase):
     def test_calculator_with_pkg(self):
         output = self.get_files_info("calculator", "pkg")
         print(output)
-        testcase="""Result for 'pkg' directory:
+        testcase = """Result for 'pkg' directory:
  - calculator.py: file_size=1721 bytes, is_dir=False
  - render.py: file_size=754 bytes, is_dir=False
  - __pycache__: file_size=70 bytes, is_dir=True"""
@@ -40,6 +41,7 @@ class TestGetFileInfo(unittest.TestCase):
     Error: Cannot list "../" as it is outside the permitted working directory"""
         self.assertEqual(output1, testcase1)
         self.assertEqual(output2, testcase2)
+
 
 if __name__ == "__main__":
     unittest.main()
