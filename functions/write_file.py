@@ -5,6 +5,8 @@ import functools
 def write_file(working_directory, file_path, content):
     working_directory = os.path.abspath(working_directory)
     joined_file_path = os.path.abspath(os.path.join(working_directory, file_path))
+    if joined_file_path == working_directory:
+        return f'Error: Cannot write "{file_path}" as it points to a directory.'
     if not joined_file_path.startswith(working_directory):
         return f'Error: Cannot write "{file_path}" as it is outside the permitted working directory'
 
@@ -14,9 +16,6 @@ def write_file(working_directory, file_path, content):
         reconstructed_path_segments = "/" + functools.reduce(
             os.path.join, path_segments
         )
-        print(reconstructed_path_segments)
-        if reconstructed_path_segments == working_directory:
-            return f'Error: Cannot write "{file_path}" as it points to a directory.'
         os.makedirs(reconstructed_path_segments, exist_ok=True)
 
     with open(joined_file_path, "w") as f:
