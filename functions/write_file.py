@@ -18,6 +18,8 @@ def write_file(working_directory, file_path, content):
         )
         os.makedirs(reconstructed_path_segments, exist_ok=True)
 
+    if not os.path.isfile(joined_file_path):
+        return f'Error: "{file_path}" is not a file.'
     with open(joined_file_path, "w") as f:
         f.write(content)
 
