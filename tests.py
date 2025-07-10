@@ -2,6 +2,7 @@ import unittest
 from functions.get_files_info import get_files_info
 from functions.get_file_content import get_file_content
 from functions.write_file import write_file
+from functions.run_python import run_python_file
 
 
 class TestGetFileInfo(unittest.TestCase):
@@ -90,6 +91,27 @@ class TestWriteFileContent(unittest.TestCase):
         output = self.write_file(
             "calculator", "/tmp/temp.txt", "this should not be allowed"
         )
+        print(output)
+
+
+class TestRunPythonFiles(unittest.TestCase):
+    def setUp(self):
+        self.run_python_file = run_python_file
+
+    def test_run_calculator_main_py(self):
+        output = self.run_python_file("calculator", "main.py")
+        print(output)
+
+    def test_run_calculator_tests_py(self):
+        output = self.run_python_file("calculator", "tests.py")
+        print(output)
+
+    def test_run_main_py_outside_calculator(self):
+        output = self.run_python_file("calculator", "../main.py")
+        print(output)
+
+    def test_run_non_existent_file_in_calculator(self):
+        output = self.run_python_file("calculator", "nonexistent.py")
         print(output)
 
 
