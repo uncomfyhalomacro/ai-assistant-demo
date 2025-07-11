@@ -88,30 +88,37 @@ When a user asks a question or makes a request, make a function call plan. You c
 
 All paths you provide should be relative to the working directory. You do not need to specify the working directory in your function calls as it is automatically injected for security reasons.
 """
-    response = client.models.generate_content(
-        model="gemini-2.0-flash-001",
-        contents=messages,
-        config=types.GenerateContentConfig(
-            tools=[available_functions], system_instruction=system_prompt
-        ),
-    )
-    prompt_token_count = response.usage_metadata.prompt_token_count
-    candidates_token_count = response.usage_metadata.candidates_token_count
-    function_calls = response.function_calls
-    if function_calls:
-        for function_call_part in function_calls:
-            function_call_result = call_function(
-                function_call_part, "--verbose" in sys.argv
-            )
-            if "--verbose" in sys.argv:
-                print(f"-> {function_call_result.parts[0].function_response.response}")
-    else:
-        print(response.text)
+    for _ in range(0, 20):
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-001",
+            contents=messages,
+            config=types.GenerateContentConfig(
+                tools=[available_functions], system_instruction=system_prompt
+            ),
+        )
+        prompt_token_count = response.usage_metadata.prompt_token_count
+        candidates_token_count = response.usage_metadata.candidates_token_count
+        function_calls = response.function_calls
+        if function_calls:
+            for function_call_part in function_calls:
+                function_call_result = call_function(
+                    function_call_part, "--verbose" in sys.argv
+                )
+                if "--verbose" in sys.argv:
+                        messages.append(f"-> {function_call_result.parts[0].function_response.response}")
+            if response.candidates:
+                for candidate in response.candidates:
+                    messages.append(candidate.content)
+        else:
+            if response.text:
+                print("Final response:")
+                print(response.text)
+                if "--verbose" in sys.argv:
+                    print(f"User prompt: {user_prompt}")
+                    print(f"Prompt tokens: {prompt_token_count}")
+                    print(f"Response tokens: {candidates_token_count}")
+                break
 
-    if "--verbose" in sys.argv:
-        print(f"User prompt: {user_prompt}")
-        print(f"Prompt tokens: {prompt_token_count}")
-        print(f"Response tokens: {candidates_token_count}")
 
 
 if __name__ == "__main__":
