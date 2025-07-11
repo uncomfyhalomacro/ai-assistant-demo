@@ -1,5 +1,24 @@
 import os
 import functools
+from google.genai import types
+
+schema_write_file = types.FunctionDeclaration(
+    name="write_file",
+    description="Write or overwrite a file. If the file exists, overwrite the file, otherwise create it. Files are constrained to the working directory.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the file, relative to the working directory.",
+            ),
+            "content": types.Schema(
+                type=types.Type.STRING,
+                description="The content to write onto the file. Empty content is a valid value.",
+            ),
+        },
+    ),
+)
 
 
 def write_file(working_directory, file_path, content):
@@ -18,8 +37,6 @@ def write_file(working_directory, file_path, content):
         )
         os.makedirs(reconstructed_path_segments, exist_ok=True)
 
-    if not os.path.isfile(joined_file_path):
-        return f'Error: "{file_path}" is not a file.'
     with open(joined_file_path, "w") as f:
         f.write(content)
 

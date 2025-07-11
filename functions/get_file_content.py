@@ -1,9 +1,26 @@
 import os
+from google.genai import types
+
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Read file content from a specified path to a file, if such a file exists and is constrained to the working directory.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the file, relative to the working directory. If not provided, it will return an error message.",
+            ),
+        },
+    ),
+)
 
 MAX_CHARS = 10000
 
 
 def get_file_content(working_directory, file_path=None):
+    if not file_path:
+        return "Error: File to get content was not specified."
     working_directory = os.path.abspath(working_directory)
     joined_file_path = os.path.abspath(os.path.join(working_directory, file_path))
     what_file = "current" if working_directory == joined_file_path else f"'{file_path}'"
